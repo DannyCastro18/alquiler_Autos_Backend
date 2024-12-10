@@ -6,7 +6,7 @@ const alquilerR = require('./routes/alquilerroutes');
 const autosR = require('./routes/autosroutes');
 const clientesR = require('./routes/clienteroutes');
 
-// Definir el puerto con un valor predeterminado
+// .Definir el puerto con un valor predeterminado
 const PORT = process.env.PORT || 6000;
 
 // Middleware para analizar JSON
