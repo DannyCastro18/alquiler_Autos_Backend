@@ -1,16 +1,29 @@
 const bcrypt = require('bcrypt');
 const { Cliente } = require('../models');
+const express = require('express');
+const app = express();
+app.use(express.json());  // Esto permite leer req.body en formato JSON
 
-  exports.loginCliente = async (req, res) =>  {
+
+exports.loginCliente = async (req, res) =>  {
+    const { correo, password } = req.body;
+
+    if (!correo || !password) {
+      return res.status(400).json({ mensaje: "Correo y contraseña son requeridos" });
+    }
     try {
-      const { correo, password } = req.body;
       //Buscar al cliente por correo
-      const cliente = await Cliente.findOne({where: { correo }});
+      const cliente = await Cliente.findOne({ where: { correo } });
+      console.log("Cliente: ", cliente);
       if(!cliente) {
         return res.status(404).json({ mensaje: "Cliente no encontrado"});
       }
+      console.log("Password desde DB: ", cliente.password);// Ver el hash de la contraseña en la base de datos
       //Verificar la contraseña
-      const passwordValido = await bcrypt.compare(password,cliente.password);
+      const passwordValido = await bcrypt.compare(password, cliente.password);
+      console.log ("¿Contraseña válida?: ", passwordValido); // Ver si la contraseña se valida correctamente
+      console.log("Contraseña enviada:", password);  // Ver la contraseña que se envió
+
       if(!passwordValido) {
         return res.status(401).json({ mensaje: "Contraseña incorrecta"});
       }
